@@ -118,8 +118,10 @@ function getSession(request, response) {
 
 function logout(request, response) {
     var cookies = new Cookies(request, response);
-    delete usedSSID[cookies.get('sistem_ssid')];
-    delete openSessions[cookies.get('sistem_username')];
+    if (getSession(request, response).username) {
+        delete usedSSID[cookies.get('sistem_ssid')];
+        delete openSessions[cookies.get('sistem_username')];
+    }
     cookies.set('sistem_ssid');
     cookies.set('sistem_username');
 }
