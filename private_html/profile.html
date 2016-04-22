@@ -1,0 +1,82 @@
+{{ templates.page_header|safe }}
+{% if userInfo.username %}
+{% if err %}
+<div class="center error">{{ err }}</div>
+<br />
+{% endif %}
+<h1 class="center">User: {{ userInfo.username }}</h1>
+<form method="POST" action="/profile/{{ userInfo.usernameLower }}">
+    <table cellpadding="0" cellspacing="10" border="0" align="center" class="form-table" style="font-size: 12pt">
+        <tr>
+            <td>
+                First name
+            </td>
+            <td>
+                <input name="firstName" value="{{ userInfo.firstName }}" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Last name
+            </td>
+            <td>
+                <input name="lastName" value="{{ userInfo.lastName }}" />
+            </td>
+        </tr>
+        {% if session.isAdmin %}
+        <tr>
+            <td>
+                Administrator
+            </td>
+            <td>
+                {% if userInfo.isAdmin %}
+                    {% if userInfo.usernameLower != session.usernameLower %}
+                        <input type="checkbox" name="isAdmin" checked />
+                    {% else %}
+                        <input type="checkbox" name="fakeIsAdmin" checked disabled />
+                        <input type="hidden" name="isAdmin" value="on" />
+                    {% endif %}
+                {% else %}
+                    <input type="checkbox" name="isAdmin" />
+                {% endif %} 
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Update" name="updateInfo" />
+            </td>
+        </tr>
+    </table>
+</form>
+<br />
+<h2 class="center">Update password</h2>
+<form method="POST" action="/profile/{{ userInfo.usernameLower }}">
+    <table cellpadding="0" cellspacing="10" border="0" align="center" class="form-table" style="font-size: 12pt">
+        <tr>
+            <td>
+                New password
+            </td>
+            <td>
+                <input type="password" name="newPassword" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                New password again
+            </td>
+            <td>
+                <input type="password" name="newPasswordConfirm" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Update password" name="updatePassword" />
+            </td>
+        </tr>
+    </table>
+</form>
+{% else %}
+<h2 class="center error">{{ err }}</h2>
+{% endif %}
+{{ templates.page_footer|safe }}

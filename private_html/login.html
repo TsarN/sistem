@@ -1,0 +1,32 @@
+{{ templates.page_header|safe }}
+{% if error %}
+    <div class="center error">
+        {{ error }}
+    </div>
+{% endif %}
+<form method="POST" action="/login">
+    <table cellpadding="0" cellspacing="10" border="0" align="center" class="form-table">
+        <tr>
+            <td>
+                Username
+            </td>
+            <td>
+                <input type="text" name="username" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Password
+            </td>
+            <td>
+                <input type="password" name="password" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Log In" name="login" />
+            </td>
+        </tr>
+    </table>
+</form>
+{{ templates.page_footer|safe }}

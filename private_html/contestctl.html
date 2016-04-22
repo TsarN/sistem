@@ -1,0 +1,96 @@
+{{ templates.page_header|safe }}
+{% if !err %}
+<form method="POST" action="/contestctl/{{ contestId }}">
+    <table cellpadding="0" cellspacing="10" border="0" align="center" class="form-table" style="font-size: 12pt">
+        <tr>
+            <td>
+                Contest name
+            </td>
+            <td>
+                <input name="name" value="{{ contest.name }}" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Rules
+            </td>
+            <td>
+                <select name="rules">
+                    <option value="acm" {% if contest.rules == 'acm' %} selected {% endif %}>
+                        ACM/ICPC
+                    </option>
+                    <option value="roi" {% if contest.rules == 'roi' %} selected {% endif %}>
+                        ROI
+                    </option>
+                    <option value="codeforces" {% if contest.rules == 'codeforces' %} selected {% endif %}>
+                        Codeforces
+                    </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Starts at
+            </td>
+            <td>
+                <input type="date" name="startTime" value="{{ (contest.startTime||Date()) }}" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Ends at
+            </td>
+            <td>
+                <input type="date" name="endTime" value="{{ (contest.endTime||Date()) }}" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Registration
+            </td>
+            <td>
+                <select name="regType">
+                    <option value="none" {{ (contest.regType == "none")?"selected":"" }}>
+                        Everyone can participate
+                    </option>
+                    <option value="public" {{ (contest.regType == "public")?"selected":"" }}>
+                        Registration required to participate officially
+                    </option>
+                    <option value="protected" {{ (contest.regType == "protected")?"selected":"" }}>
+                        Registration required to participate
+                    </option>
+                    <option value="private" {{ (contest.regType == "private")?"selected":"" }}>
+                        Admins choose users, that can participate
+                    </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Visibility
+            </td>
+            <td>
+                <select name="visibility">
+                    <option value="public" {{ (contest.visibility == "public")?"selected":"" }}>
+                        This contest is publicly seen
+                    </option>
+                    <option value="protected" {{ (contest.visibility == "protected")?"selected":"" }}>
+                        Problem texts are only available to contestants
+                    </option>
+                    <option value="private" {{ (contest.visibility == "private")?"selected":"" }}>
+                        This contest is seen only by contestants
+                    </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" name="updateContest" value="{% if !contestId %}Create{% else %}Update{% endif %}" />
+            </td>
+        </tr>
+    </table>
+</form>
+{% else %}
+<h1 class="center error">{{ err }}</h1>
+{% endif %}
+{{ templates.page_footer|safe }}

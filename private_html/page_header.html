@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link href="/main.css" rel="stylesheet" type="text/css" />
+        <title>SISTEM</title>
+    </head>
+    <body>
+        <div class="top-panel">
+            <a href="/" class="logo">SISTEM</a>
+            <div class="top-panel-left-controls">
+                <a href="/contests">Contests</a> | 
+                <a href="/about">About</a>
+            </div>
+            <div class="top-panel-right-controls">
+                {% if session.username %}
+                    Hello, <a href="/profile"><b>{{ session.username|escape }}</b></a>! 
+                    {% if session.isAdmin %}
+                        <a href="/admin">Server control</a> | 
+                    {% endif %}
+                    <a href="/logout">Log out</a>
+                {% else %}
+                    <a href="/login">Log in</a> | 
+                    <a href="/signup">Sign up</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="wrapper" id="content">

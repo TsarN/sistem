@@ -1,0 +1,47 @@
+{{ templates.page_header|safe }}
+<h1 class="center">Contests</h1>
+
+{% if contests.length == 0 %}
+<div class="center error">
+    No contests yet.
+    {% if session.isAdmin %}
+    <a href="/contestctl">Create new</a>
+    {% else %}
+    Check back soon!
+    {% endif %}
+</div>
+{% else %}
+<table class="generic-table" border="1">
+    <tr>
+        <th>Name</th>
+        <th>Rules</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Action</th>
+    </tr>
+    {% if session.isAdmin %}
+    <tr>
+        <td colspan="4" class="center-text">
+            <b>New tournament</b>
+        </td>
+        <td>
+            <a href="/contestctl">Create</a>
+        </td>
+    </tr>
+    {% endif %}
+    {% for contest in contests %}
+    <tr>
+        <td>{{ contest.name }}</td>
+        <td>{{ contest.rules }}</td>
+        <td>{{ contest.startTime|date('H:i:s, jS \o\f F Y') }}</td>
+        <td>{{ contest.endTime|date('H:i:s, jS \o\f F Y') }}</td>
+        <td>
+            {% if session.isAdmin%}
+            <a href="/contestctl/{{ contest._id }}">Edit</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{{ templates.page_footer|safe }}
