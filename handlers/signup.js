@@ -21,7 +21,14 @@ function postSignup(request, response, globals) {
         var passwordConfirm = postData.passwordConfirm;
 
         session.signup(request, response, globals,
-            username, password, passwordConfirm);
+            username, password, passwordConfirm, function() {
+                response.writeHead(302, {
+                    "Location": "/"
+                });
+                response.end();
+            }, function(err) {
+                handleSignup(request, response, globals, err);
+            });
     })
 }
 
@@ -53,5 +60,3 @@ function handleSignup(request, response, globals, err) {
 exports.handlers = {
     "/signup": handleSignup
 }
-
-exports.handleSignup = handleSignup;

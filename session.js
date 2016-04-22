@@ -31,8 +31,7 @@ function newSession(user) {
     return ssid;
 }
 
-function login(request, response, globals, username, password, redirectTo) {
-    redirectTo = redirectTo || "/";
+function login(request, response, globals, username, password, onSuccess, onFail) {
     var passwordHash = crypto.createHash('sha1');
     passwordHash.update(password);
     passwordHash = passwordHash.digest('hex');
@@ -49,22 +48,15 @@ function login(request, response, globals, username, password, redirectTo) {
             cookies.set('sistem_username', data[0].usernameLower);
             cookies.set('sistem_ssid', ssid);
 
-            response.writeHead(302, {
-                "Location": redirectTo
-            });
-            response.end();
+            onSuccess();
         } else {
-            require(__dirname + "/handlers/auth.js").handleLogin(
-                request, response, globals, "Wrong username or password"
-            );
+            onFail("Wrong username or password");
         }
     })
 }
 
 function signup(request, response, globals,
-    username, password, passwordConfirm, redirectTo) {
-    redirectTo = redirectTo || "/";
-
+    username, password, passwordConfirm, onSuccess, onFail) {
     var passwordHash = crypto.createHash('sha1');
     passwordHash.update(password);
     passwordHash = passwordHash.digest('hex');
@@ -93,28 +85,18 @@ function signup(request, response, globals,
                 if (err)
                     throw err;
                 login(request, response, globals,
-                    username, password, redirectTo);
+                    username, password, onSuccess, onFail);
             })
         } else {
-            require(__dirname + "/handlers/signup.js").handleSignup(
-                request, response, globals, "Password is too short"
-            );
+            onFail("Password is too short");
         }} else {
-            require(__dirname + "/handlers/signup.js").handleSignup(
-                request, response, globals, "Passwords do not match"
-            );
+            onFail("Passwords do not match");
         }} else {
-            require(__dirname + "/handlers/signup.js").handleSignup(
-                request, response, globals, "Username must contain alphanumeric characters only"
-            );
+            onFail("Username must contain alphanumeric characters only");
         }} else {
-            require(__dirname + "/handlers/signup.js").handleSignup(
-                request, response, globals, "Username must be at least 3 and at most 20 characters"
-            );
+            onFail("Username must be at least 3 and at most 20 characters");
         }} else {
-            require(__dirname + "/handlers/signup.js").handleSignup(
-                request, response, globals, "Username is taken"
-            );
+            onFail("Username is taken");
         }
     })
 }
@@ -143,9 +125,7 @@ function logout(request, response) {
 }
 
 function updateInfo(request, response, globals, user, firstName,
-    lastName, isAdmin, redirectTo) {
-    redirectTo = redirectTo || "/";
-
+    lastName, isAdmin, onSuccess, onFail) {
     var userLower = user.toLowerCase();
     var session = getSession(request, response);
 
@@ -160,22 +140,21 @@ function updateInfo(request, response, globals, user, firstName,
         }}, {multi: true}, function(err) {
             if (err)
                 throw err;
-            response.writeHead(302, {
-                "Location": redirectTo
-            });
-            response.end();
+            onSuccess();
         })
     } else {
-        require(__dirname + "/handlers/profile.js").handleProfile(
-            request, response, globals, user, "Permission denied");
+        onFail("Permission denied");
     }
 }
 
 function updatePassword(request, response, globals, user,
-    newPassword, newPasswordConfirm, redirectTo) {
-    redirectTo = redirectTo || "/";
+    newPassword, newPasswordConfirm, onSuccess, onFail) {
     var userLower = user.toLowerCase();
     var session = getSession(request, response);
+
+    var newPasswordHash = crypto.createHash('sha1');
+    newPasswordHash.update(newPassword);
+    newPasswordHash = passwordHash.digest('hex');
 
     if (session.isAdmin || (session.usernameLower == userLower)) {
     if (newPassword == newPasswordConfirm) {
@@ -183,24 +162,18 @@ function updatePassword(request, response, globals, user,
         globals.users.update({
             usernameLower: userLower
         }, { $set: {
-            password: newPassword
+            password: newPasswordHash
         }}, {multi: true}, function(err) {
             if (err)
                 throw err;
-            response.writeHead(302, {
-                "Location": redirectTo
-            })
-            response.end();
+            onSuccess();
         })
     } else {
-        require(__dirname + "/handlers/profile.js").handleProfile(
-            request, response, globals, user, "Password is too short");
+        onFail("Password is too short");
     }} else {
-        require(__dirname + "/handlers/profile.js").handleProfile(
-            request, response, globals, user, "Passwords don't match");
+        onFail("Passwords don't match");
     }} else {
-        require(__dirname + "/handlers/profile.js").handleProfile(
-            request, response, globals, user, "Permission denied");
+        onFail("Permission denied");
     }
 }
 

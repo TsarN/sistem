@@ -23,14 +23,28 @@ function postProfileUpdate(request, response, globals, user) {
             var lastName = postData.lastName;
             var isAdmin = postData.isAdmin;
 
-            session.updateInfo(request, response, globals, user, firstName, lastName, isAdmin, "/profile/" + user);
+            session.updateInfo(request, response, globals, user, firstName, lastName, isAdmin, function() {
+                response.writeHead(302, {
+                    "Location": "/profile/" + user
+                });
+                response.end();
+            }, function(err) {
+                handleProfile(request, response, globals, user, err);
+            })
         }
 
         if (postData.updatePassword) {
             var newPassword = postData.newPassword;
             var newPasswordConfirm = postData.newPasswordConfirm;
 
-            session.updatePassword(request, response, globals, user, newPassword, newPasswordConfirm, "/profile/" + user);
+            session.updatePassword(request, response, globals, user, newPassword, newPasswordConfirm, function() {
+                response.writeHead(302, {
+                    "Location": "/profile/" + user
+                });
+                response.end();
+            }, function(err) {
+                handleProfile(request, response, globals, user, err);
+            })
         }
     })
 }
@@ -87,5 +101,3 @@ exports.handlers = {
     "/profile": handleProfile,
     "/profile/": handleProfile
 }
-
-exports.handleProfile = handleProfile;

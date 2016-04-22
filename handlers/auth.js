@@ -19,7 +19,14 @@ function postLogin(request, response, globals) {
         var username = postData.username;
         var password = postData.password;
 
-        session.login(request, response, globals, username, password);
+        session.login(request, response, globals, username, password, function() {
+            response.writeHead(302, {
+                "Location": "/"
+            });
+            response.end();
+        }, function(err) {
+            handleLogin(request, response, globals, err);
+        });
     })
 }
 
@@ -58,5 +65,3 @@ exports.handlers = {
     "/login"  : handleLogin,
     "/logout" : handleLogout
 }
-
-exports.handleLogin = handleLogin;

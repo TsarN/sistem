@@ -24,7 +24,14 @@ function postContestctl(request, response, globals, contestId) {
         var endTime = postData.endTime;
 
         contest.updateContest(request, response, globals, contestId,
-            name, startTime, endTime, rules);
+        name, startTime, endTime, rules, function() {
+            response.writeHead(302, {
+                "Location": "/"
+            });
+            response.end();
+        }, function(err) {
+            handleContestctl(request, response, globals, contestId, err);
+        });
     })
 }
 

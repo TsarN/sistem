@@ -1,8 +1,7 @@
 var session = require("./session");
 
 function updateContest(request, response, globals, contestId, 
-    name, startTime, endTime, rules, redirectTo) {
-    redirectTo = redirectTo || "/";
+    name, startTime, endTime, rules, onSuccess, onFail) {
 
     var session_ = session.getSession(request, response);
     if (session_.isAdmin) {
@@ -17,10 +16,7 @@ function updateContest(request, response, globals, contestId,
             }}, {multi: true}, function(err) {
                 if (err)
                     throw err;
-                response.writeHead(302, {
-                    "Location": redirectTo
-                });
-                response.end();
+                onSuccess();
             })
         } else {
             globals.contests.insert({
@@ -32,15 +28,11 @@ function updateContest(request, response, globals, contestId,
             }, function(err) {
                 if (err)
                     throw err;
-                response.writeHead(302, {
-                    "Location": redirectTo
-                });
-                response.end();
+                onSuccess();
             });
         }
     } else {
-        require(__dirname + "/handlers/contestctl.js").handleContestctl(
-            request, response, globals, contestId, "Permission denied");
+        onFail("Permission denied");
     }
 
 }
