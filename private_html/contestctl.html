@@ -33,7 +33,11 @@
                 Starts at
             </td>
             <td>
-                <input type="date" name="startTime" value="{{ (contest.startTime||Date()) }}" />
+                <input name="startDate" size="10" value="{{ (contest.startTime||Date())|date('m/d/Y') }}" />
+                <input name="startTime" size="8" value="{{ (contest.startTime||Date())|date('H:i:s') }}" />
+                <script type="text/javascript">
+                    $("[name=startDate]").datepicker();
+                </script>
             </td>
         </tr>
         <tr>
@@ -41,7 +45,11 @@
                 Ends at
             </td>
             <td>
-                <input type="date" name="endTime" value="{{ (contest.endTime||Date()) }}" />
+                <input name="endDate" size="10" value="{{ (contest.endTime||Date())|date('m/d/Y') }}" />
+                <input name="endTime" size="8" value="{{ (contest.endTime||Date())|date('H:i:s') }}" />
+                <script type="text/javascript">
+                    $("[name=endDate]").datepicker();
+                </script>
             </td>
         </tr>
         <tr>
@@ -91,6 +99,6 @@
     </table>
 </form>
 {% else %}
-<h1 class="center error">{{ err }}</h1>
+<div class="center error">{{ err }}</div>
 {% endif %}
 {{ templates.page_footer|safe }}

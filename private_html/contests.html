@@ -38,6 +38,7 @@
         <td>
             {% if session.isAdmin%}
             <a href="/contestctl/{{ contest._id }}">Edit</a>
+            <a href="/contestdel/{{ contest._id }}">Delete</a>
             {% endif %}
         </td>
     </tr>

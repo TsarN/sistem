@@ -8,34 +8,35 @@
   ./index.js
 
  Database = {
-      users: [{
-        username: String,
-        password: String,
-        permissions: String,
-        wallet: Int,
-        group: String,
-        firstName: String,
-        lastName: String,
-        patronymic: String
-      }], 
-      contests: [{
-        name: String,
-        startTime: DateTime,
-        endTime: DateTime,
-        rules: (acm, roi, codeforces),
-        problems: [{
-          name: String,
-          statement: String,
-          timeLimit: Int,
-          memoryLimit: Int,
-          compilersAllowed: [String],
-          compilersForbidden: [String]
-        }]
-      }],
-      compilers: [{
-        name: String, 
-        compileCmd: String, 
-        runCmd: String,
-        path: String
-      }]
-  }
+users: [{
+    username: String,
+    password: String,
+    permissions: String,
+    wallet: Int,
+    group: String,
+    firstName: String,
+    lastName: String,
+    patronymic: String
+  }], 
+contests: [{
+    name: String,
+    startTime: DateTime,
+    endTime: DateTime,
+    rules: (acm, roi, codeforces),
+    problems: [problems ids]
+}]
+problems: [{
+    name: String,
+    statement: String,
+    timeLimit: Int,
+    memoryLimit: Int,
+    compilersAllowed: [String],
+    compilersForbidden: [String]
+}],
+compilers: [{
+    name: String, 
+    compileCmd: String, 
+    runCmd: String,
+    path: String
+  }]
+}

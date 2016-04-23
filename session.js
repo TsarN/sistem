@@ -33,7 +33,7 @@ function newSession(user) {
 
 function login(request, response, globals, username, password, onSuccess, onFail) {
     var passwordHash = crypto.createHash('sha1');
-    passwordHash.update(password);
+    passwordHash.update(password + globals.salt);
     passwordHash = passwordHash.digest('hex');
     globals.users.find({
         usernameLower: username.toLowerCase(),
@@ -58,7 +58,7 @@ function login(request, response, globals, username, password, onSuccess, onFail
 function signup(request, response, globals,
     username, password, passwordConfirm, onSuccess, onFail) {
     var passwordHash = crypto.createHash('sha1');
-    passwordHash.update(password);
+    passwordHash.update(password + globals.salt);
     passwordHash = passwordHash.digest('hex');
 
     globals.users.find({
@@ -155,7 +155,7 @@ function updatePassword(request, response, globals, user,
     var session = getSession(request, response);
 
     var newPasswordHash = crypto.createHash('sha1');
-    newPasswordHash.update(newPassword);
+    newPasswordHash.update(newPassword + globals.salt);
     newPasswordHash = passwordHash.digest('hex');
 
     if (session.isAdmin || (session.usernameLower == userLower)) {

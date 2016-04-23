@@ -20,8 +20,8 @@ function postContestctl(request, response, globals, contestId) {
         var postData = qs.parse(rawPostData);
         var name = postData.name;
         var rules = postData.rules;
-        var startTime = postData.startTime;
-        var endTime = postData.endTime;
+        var startTime = new Date(postData.startDate + " " + postData.startTime).toString();
+        var endTime = new Date(postData.endDate + " " + postData.endTime).toString();
 
         contest.updateContest(request, response, globals, contestId,
         name, startTime, endTime, rules, function() {
@@ -58,12 +58,13 @@ function handleContestctl(request, response, globals, contestId, ee) {
             templates: {},
             contestId: contestId,
             contest: (contests.length)?contests[0]:{},
-            err: ee
+            err: ee,
+            jQuery: true
         }
 
-        templateOptions.templates.page_header = swig.renderFile('private_html/page_header.html', templateOptions);
-        templateOptions.templates.page_footer = swig.renderFile('private_html/page_footer.html', templateOptions);
-        templateOptions.templates.index = swig.renderFile('private_html/contestctl.html', templateOptions);
+        templateOptions.templates.page_header = swig.renderFile(globals.privateHTMLPath + '/page_header.html', templateOptions);
+        templateOptions.templates.page_footer = swig.renderFile(globals.privateHTMLPath + '/page_footer.html', templateOptions);
+        templateOptions.templates.index = swig.renderFile(globals.privateHTMLPath + '/contestctl.html', templateOptions);
         
         response.writeHead(200, {
             "Content-type": "text/html"
