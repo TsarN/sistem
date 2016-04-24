@@ -3,6 +3,7 @@
 var swig    = require("swig");
 var qs      = require("querystring");
 var session = require("../session");
+var util    = require("util");
 
 function postLogin(request, response, globals) {
     var rawPostData = "";
@@ -42,9 +43,20 @@ function handleLogin(request, response, globals, err) {
         templates: {},
         error: err
     };
-    templateOptions.templates.page_header = swig.renderFile(globals.privateHTMLPath + '/page_header.html', templateOptions);
-    templateOptions.templates.page_footer = swig.renderFile(globals.privateHTMLPath + '/page_footer.html', templateOptions);
-    templateOptions.templates.index = swig.renderFile(globals.privateHTMLPath + '/login.html', templateOptions);
+
+    try {
+        templateOptions.templates.page_header = swig.renderFile(globals.privateHTMLPath + '/page_header.html', templateOptions);
+        templateOptions.templates.page_footer = swig.renderFile(globals.privateHTMLPath + '/page_footer.html', templateOptions);
+        templateOptions.templates.index = swig.renderFile(globals.privateHTMLPath + '/login.html', templateOptions);
+    } catch (err) {
+        response.writeHead(500, {
+            "Content-type": "text/html"
+        });
+        response.end("<h1>500 Internal server error</h1>");
+        util.log("Internal server error. " + err.name + ": " + err.message);
+        console.log("Stack trace: \n" + err.stack);
+        return ;
+    }
     
     response.writeHead(200, {
         "Content-type": "text/html"

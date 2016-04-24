@@ -33,8 +33,8 @@
                 Starts at
             </td>
             <td>
-                <input name="startDate" size="10" value="{{ (contest.startTime||Date())|date('m/d/Y') }}" />
-                <input name="startTime" size="8" value="{{ (contest.startTime||Date())|date('H:i:s') }}" />
+                <input name="startDate" size="10" value="{{ (contest.startTime||Date())|date('m/d/Y', tzOffset) }}" />
+                <input name="startTime" size="8" value="{{ (contest.startTime||Date())|date('H:i:s', tzOffset) }}" />
                 <script type="text/javascript">
                     $("[name=startDate]").datepicker();
                 </script>
@@ -45,8 +45,8 @@
                 Ends at
             </td>
             <td>
-                <input name="endDate" size="10" value="{{ (contest.endTime||Date())|date('m/d/Y') }}" />
-                <input name="endTime" size="8" value="{{ (contest.endTime||Date())|date('H:i:s') }}" />
+                <input name="endDate" size="10" value="{{ (contest.endTime||Date())|date('m/d/Y', tzOffset) }}" />
+                <input name="endTime" size="8" value="{{ (contest.endTime||Date())|date('H:i:s', tzOffset) }}" />
                 <script type="text/javascript">
                     $("[name=endDate]").datepicker();
                 </script>
@@ -98,6 +98,25 @@
         </tr>
     </table>
 </form>
+
+<h3 class="center">Problems</h3>
+
+<table class="generic-table" border="1">
+    <tr>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+    <tr>
+        <td>
+            <b>New problem</b>
+        </td>
+        <td>
+            <a href="/problemctl?contestId={{ contestId }}">New</a>
+            <a href="#">Existing</a>
+        </td>
+    </tr>
+</table>
+
 {% else %}
 <div class="center error">{{ err }}</div>
 {% endif %}

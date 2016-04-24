@@ -13,7 +13,7 @@ function updateContest(request, response, globals, contestId,
                 startTime: startTime,
                 endTime: endTime,
                 rules: rules
-            }}, {multi: true}, function(err) {
+            }}, {}, function(err) {
                 if (err)
                     throw err;
                 onSuccess();
@@ -23,8 +23,7 @@ function updateContest(request, response, globals, contestId,
                 name: name,
                 startTime: startTime,
                 endTime: endTime,
-                rules: rules,
-                problems: []
+                rules: rules
             }, function(err) {
                 if (err)
                     throw err;

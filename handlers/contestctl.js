@@ -4,6 +4,7 @@ var swig    = require("swig");
 var session = require("../session");
 var contest = require("../contest");
 var qs      = require("querystring");
+var util    = require("util");
 
 function postContestctl(request, response, globals, contestId) {
     var rawPostData = "";
@@ -34,12 +35,12 @@ function postContestctl(request, response, globals, contestId) {
     })
 }
 
-function handleContestctl(request, response, globals, contestId, ee) {
-    if (!ee && (request.method == "POST")) {
+function handleContestctl(request, response, globals, contestId, error) {
+    if (!error && (request.method == "POST")) {
         postContestctl(request, response, globals, contestId);
         return ;
     }
-    ee = ee || "";
+    error = error || "";
     contestId = contestId || null;
     var session_ = session.getSession(request, response);
 
@@ -48,23 +49,34 @@ function handleContestctl(request, response, globals, contestId, ee) {
             throw err;
 
         if (contests.length == 0)
-            ee = "No such contest";
+            error = "No such contest";
         if (!session_.isAdmin)
-            ee = "Permission denied";
+            error = "Permission denied";
 
         var templateOptions = {
             session: session_,
             templates: {},
             contestId: contestId,
             contest: (contests.length) ? contests[0] : {},
-            err: ee,
+            err: error,
+            tzOffset: globals.tzOffset,
             jQueryUI: true,
             jQuery: true
         }
 
-        templateOptions.templates.page_header = swig.renderFile(globals.privateHTMLPath + '/page_header.html', templateOptions);
-        templateOptions.templates.page_footer = swig.renderFile(globals.privateHTMLPath + '/page_footer.html', templateOptions);
-        templateOptions.templates.index = swig.renderFile(globals.privateHTMLPath + '/contestctl.html', templateOptions);
+        try {
+            templateOptions.templates.page_header = swig.renderFile(globals.privateHTMLPath + '/page_header.html', templateOptions);
+            templateOptions.templates.page_footer = swig.renderFile(globals.privateHTMLPath + '/page_footer.html', templateOptions);
+            templateOptions.templates.index = swig.renderFile(globals.privateHTMLPath + '/contestctl.html', templateOptions);
+        } catch (err) {
+            response.writeHead(500, {
+                "Content-type": "text/html"
+            });
+            response.end("<h1>500 Internal server error</h1>");
+            util.log("Internal server error. " + err.name + ": " + err.message);
+            console.log("Stack trace: \n" + err.stack);
+            return ;
+        }
         
         response.writeHead(200, {
             "Content-type": "text/html"

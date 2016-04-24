@@ -29,10 +29,13 @@ process.on('exit', function() {
     fs.writeFileSync("config", JSON.stringify(cfg, null, 4));
 })
 
+var currentDate = new Date();
+
 var globals = {
     privateHTMLPath: "themes/" + cfg.currentTheme + "/private_html",
     publicHTMLPath: "themes/" + cfg.currentTheme + "/public_html",
-    salt: "lKVtXxx(_fK_#-F@"
+    salt: "lKVtXxx(_fK_#-F@",
+    tzOffset: currentDate.getTimezoneOffset()
 };
 
 var databases = ['users', 'contests', 'problems', 'compilers'];
