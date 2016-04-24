@@ -9,8 +9,8 @@ function route(handle, pathname, request, response, globals) {
     } else if (typeof handle[path.dirname(pathname) + "/"] === 'function') {
         handle[path.dirname(pathname) + "/"](request, response, globals, path.basename(pathname))
     } else {
-        var serverpath   = __dirname + "/public_html" + path.normalize(pathname);    
-        var notfoundpath = __dirname + "/public_html/404.html";
+        var serverpath   = __dirname + "/" + globals.publicHTMLPath + path.normalize(pathname);    
+        var notfoundpath = __dirname + "/" + globals.publicHTMLPath + "/404.html";
         fs.stat(serverpath, function(err, stats) {
             var exists = !err;
             if (exists && stats.isDirectory())
@@ -29,13 +29,17 @@ function route(handle, pathname, request, response, globals) {
                         response.end();
                         return;
                     } else {
-                        response.writeHead(200, {
-                            "Content-type": mime.lookup(serverpath)
-                        })
-                        fs.readFile(serverpath, "utf8", function(err, data) {
+                        var encoding = mime.charsets.lookup(mime.lookup(serverpath), "binary");
+                        fs.readFile(serverpath, encoding, function(err, data) {
                             if (err)
                                 throw err;
-                            response.write(data);
+                            if (encoding == "binary")
+                                response.writeHead(200);
+                            else
+                                response.writeHead(200, {
+                                    "Content-type": mime.lookup(serverpath)
+                                })
+                            response.write(data, encoding);
                             response.end();
                         })
                     }

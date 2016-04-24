@@ -3,11 +3,18 @@
     <head>
         <meta charset="utf-8" />
         <link rel="stylesheet" type="text/css" href="/main.css" />
-        {% if jQuery %}
+        {% if jQueryUI %}
         <link rel="stylesheet" type="text/css" href="/jquery-ui.min.css" />
         <link rel="stylesheet" type="text/css" href="/jquery-ui.theme.min.css" />
+        {% endif %}
+        {% if jQuery %}
         <script type="text/javascript" src="/jquery.min.js"></script>
+        {% endif %}
+        {% if jQueryUI %}
         <script type="text/javascript" src="/jquery-ui.min.js"></script>
+        {% endif %}
+        {% if FontAwesome %}
+        <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css" />
         {% endif %}
         <title>SISTEM</title>
     </head>

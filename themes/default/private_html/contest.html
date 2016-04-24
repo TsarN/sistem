@@ -1,0 +1,7 @@
+{{ templates.page_header|safe }}
+{% if !err %}
+<h1 class="center">{{ contest.name }}</h1>
+{% else %}
+<div class="center error">{{ err }}</div>
+{% endif %}
+{{ templates.page_footer|safe }}

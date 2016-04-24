@@ -1,7 +1,6 @@
 // Contest remove
 
 var swig    = require("swig");
-var async   = require("async");
 var session = require("../session");
 var contest = require("../contest");
 var qs      = require("querystring");

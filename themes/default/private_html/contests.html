@@ -36,6 +36,7 @@
         <td>{{ contest.startTime|date('H:i:s, jS \o\f F Y') }}</td>
         <td>{{ contest.endTime|date('H:i:s, jS \o\f F Y') }}</td>
         <td>
+            <a href="/contest/{{ contest._id }}">Log in</a>
             {% if session.isAdmin%}
             <a href="/contestctl/{{ contest._id }}">Edit</a>
             <a href="/contestdel/{{ contest._id }}">Delete</a>

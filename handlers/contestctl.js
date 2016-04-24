@@ -1,7 +1,6 @@
 // Contest control
 
 var swig    = require("swig");
-var async   = require("async");
 var session = require("../session");
 var contest = require("../contest");
 var qs      = require("querystring");
@@ -57,8 +56,9 @@ function handleContestctl(request, response, globals, contestId, ee) {
             session: session_,
             templates: {},
             contestId: contestId,
-            contest: (contests.length)?contests[0]:{},
+            contest: (contests.length) ? contests[0] : {},
             err: ee,
+            jQueryUI: true,
             jQuery: true
         }
 

@@ -1,7 +1,6 @@
 // About handler
 
 var swig    = require("swig");
-var async   = require("async");
 var session = require("../session");
 
 function handleAbout(request, response, globals) {
