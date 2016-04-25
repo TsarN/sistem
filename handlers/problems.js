@@ -1,27 +1,50 @@
-// Index handler
+// Problem list handler
 
 var swig    = require("swig");
 var session = require("../session");
 var util    = require("util");
+var url     = require("url");
 
-function handleContests(request, response, globals) {
+function handleProblems(request, response, globals) {
     var session_ = session.getSession(request, response);
 
-    globals.contests.find({}, function(err, data) {
+    var getArgs = url.parse(request.url, true).query || {};
+    var filters = {};
+    if (getArgs.contestId)
+        filters.contestId = getArgs.contestId;
+    if (getArgs.contestId == "null")
+        filters.contestId = null;
+
+    var extraButtons = [];
+    var showNewProblemButton = true;
+    if (getArgs.addToContestId) {
+        extraButtons.push({
+            name: "Add to contest",
+            href_before: "/problemexclude/",
+            href_after: "?contestId=" + getArgs.addToContestId
+        });
+        showNewProblemButton = false;
+    }
+
+    globals.problems.find(filters, function(err, data) {
         if (err)
             throw err;
 
         var templateOptions = {
             session: session_,
             templates: {},
-            contests: data,
-            tzOffset: globals.tzOffset
+            problems: data,
+            tzOffset: globals.tzOffset,
+            pathname: url.parse(request.url).pathname,
+            extraButtons: extraButtons,
+            showNewProblemButton: showNewProblemButton,
+            ref: getArgs.ref
         }
 
         try {
             templateOptions.templates.page_header = swig.renderFile(globals.privateHTMLPath + '/page_header.html', templateOptions);
             templateOptions.templates.page_footer = swig.renderFile(globals.privateHTMLPath + '/page_footer.html', templateOptions);
-            templateOptions.templates.index = swig.renderFile(globals.privateHTMLPath + '/contests.html', templateOptions);
+            templateOptions.templates.index = swig.renderFile(globals.privateHTMLPath + '/problems.html', templateOptions);
         } catch (err) {
             response.writeHead(500, {
                 "Content-type": "text/html"
@@ -41,6 +64,5 @@ function handleContests(request, response, globals) {
 }
 
 exports.handlers = {
-    "/": handleContests,
-    "/contests": handleContests
+    "/problems": handleProblems
 }

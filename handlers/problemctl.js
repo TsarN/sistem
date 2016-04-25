@@ -9,6 +9,7 @@ var url     = require("url");
 
 function postProblemctl(request, response, globals, problemId) {
     var rawPostData = "";
+    var defaultValues = url.parse(request.url, true).query || {};
 
     request.on("data", function(data) {
         rawPostData += data;
@@ -27,10 +28,17 @@ function postProblemctl(request, response, globals, problemId) {
 
         problem.updateProblem(request, response, globals, problemId,
             name, timeLimit, memoryLimit, contestId, statement, function() {
-                response.writeHead(302, {
-                    "Location": "/"
-                });
-                response.end();
+                if (defaultValues.ref) {
+                    response.writeHead(302, {
+                        "Location": defaultValues.ref
+                    });
+                    response.end();
+                } else {
+                    response.writeHead(302, {
+                        "Location": "/"
+                    });
+                    response.end();
+                }
             }, function(err) {
                 handleProblemctl(request, response, globals, problemId, err);
             })
@@ -68,6 +76,7 @@ function handleProblemctl(request, response, globals, problemId, error) {
                 templates: {},
                 problemId: problemId,
                 problem: (problems.length) ? problems[0] : {},
+                getArgs: defaultValues,
                 err: error,
                 jQuery: true,
                 CKEditor: true,

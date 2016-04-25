@@ -39,4 +39,44 @@ function updateProblem(request, response, globals, problemId,
     }
 }
 
+function deleteProblem(request, response, globals, problemId, onSuccess, onFail) {
+    var session_ = session.getSession(request, response);
+    if (session_.isAdmin) {
+        globals.problems.remove({
+            _id: problemId
+        }, {}, function(err, numRemoved) {
+            if (err)
+                throw err;
+            if (numRemoved > 0)
+                onSuccess();
+            else 
+                onFail("No such problem");
+        })
+    } else {
+        onFail("Permission denied");
+    }
+}
+
+function excludeProblem(request, response, globals, problemId, contestId, onSuccess, onFail) {
+    var session_ = session.getSession(request, response);
+    if (session_.isAdmin) {
+        globals.problems.update({
+            _id: problemId
+        }, { $set: {
+            contestId: contestId || null
+        }}, {}, function(err, numUpdated) {
+            if (err)
+                throw err;
+            if (numUpdated > 0)
+                onSuccess();
+            else 
+                onFail("No such problem");
+        })
+    } else {
+        onFail("Permission denied");
+    }
+}
+
 exports.updateProblem = updateProblem;
+exports.deleteProblem = deleteProblem;
+exports.excludeProblem = excludeProblem;

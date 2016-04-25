@@ -15,7 +15,7 @@
                 Rules
             </td>
             <td>
-                <select name="rules">
+                <select name="rules" disabled>
                     <option value="acm" {% if contest.rules == 'acm' %} selected {% endif %}>
                         ACM/ICPC
                     </option>
@@ -57,7 +57,7 @@
                 Registration
             </td>
             <td>
-                <select name="regType">
+                <select name="regType" disabled>
                     <option value="none" {{ (contest.regType == "none")?"selected":"" }}>
                         Everyone can participate
                     </option>
@@ -78,7 +78,7 @@
                 Visibility
             </td>
             <td>
-                <select name="visibility">
+                <select name="visibility" disabled>
                     <option value="public" {{ (contest.visibility == "public")?"selected":"" }}>
                         This contest is publicly seen
                     </option>
@@ -108,13 +108,25 @@
     </tr>
     <tr>
         <td>
-            <b>New problem</b>
+            <b>Add problem</b>
         </td>
         <td>
             <a href="/problemctl?contestId={{ contestId }}">New</a>
-            <a href="#">Existing</a>
+            <a href="/problems?contestId=null&addToContestId={{ contestId }}&ref={{ pathname }}">Existing</a>
         </td>
     </tr>
+    {% for problem in problems %}
+    <tr>
+        <td>
+            {{ problem.name }}
+        </td>
+        <td>
+            <a href="/problemctl/{{ problem._id }}?ref={{ pathname }}">Edit</a>
+            <a href="/problemexclude/{{ problem._id }}">Exclude</a>
+            <a href="/problemdel/{{ problem._id }}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
 </table>
 
 {% else %}

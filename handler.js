@@ -17,7 +17,6 @@ var walk = function(dir) {
 
 var handlers = {};
 walk("handlers").forEach(function(pathname) {
-    util.log("Loading " + pathname);
     var handler = require("./" + pathname);
 
     for (var p in handler.handlers) {

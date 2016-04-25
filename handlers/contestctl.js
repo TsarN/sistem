@@ -5,6 +5,7 @@ var session = require("../session");
 var contest = require("../contest");
 var qs      = require("querystring");
 var util    = require("util");
+var url     = require("url");
 
 function postContestctl(request, response, globals, contestId) {
     var rawPostData = "";
@@ -60,29 +61,37 @@ function handleContestctl(request, response, globals, contestId, error) {
             contest: (contests.length) ? contests[0] : {},
             err: error,
             tzOffset: globals.tzOffset,
+            pathname: url.parse(request.url).pathname,
             jQueryUI: true,
             jQuery: true
         }
 
-        try {
-            templateOptions.templates.page_header = swig.renderFile(globals.privateHTMLPath + '/page_header.html', templateOptions);
-            templateOptions.templates.page_footer = swig.renderFile(globals.privateHTMLPath + '/page_footer.html', templateOptions);
-            templateOptions.templates.index = swig.renderFile(globals.privateHTMLPath + '/contestctl.html', templateOptions);
-        } catch (err) {
-            response.writeHead(500, {
+        globals.problems.find({
+            contestId: (contestId || undefined)
+        }, function(err, problems) {
+            if (err)
+                throw err;
+            templateOptions.problems = problems;
+            try {
+                templateOptions.templates.page_header = swig.renderFile(globals.privateHTMLPath + '/page_header.html', templateOptions);
+                templateOptions.templates.page_footer = swig.renderFile(globals.privateHTMLPath + '/page_footer.html', templateOptions);
+                templateOptions.templates.index = swig.renderFile(globals.privateHTMLPath + '/contestctl.html', templateOptions);
+            } catch (err) {
+                response.writeHead(500, {
+                    "Content-type": "text/html"
+                });
+                response.end("<h1>500 Internal server error</h1>");
+                util.log("Internal server error. " + err.name + ": " + err.message);
+                console.log("Stack trace: \n" + err.stack);
+                return ;
+            }
+            
+            response.writeHead(200, {
                 "Content-type": "text/html"
-            });
-            response.end("<h1>500 Internal server error</h1>");
-            util.log("Internal server error. " + err.name + ": " + err.message);
-            console.log("Stack trace: \n" + err.stack);
-            return ;
-        }
-        
-        response.writeHead(200, {
-            "Content-type": "text/html"
+            })
+            response.write(templateOptions.templates.index);
+            response.end();
         })
-        response.write(templateOptions.templates.index);
-        response.end();
     }
 
     if (contestId) {

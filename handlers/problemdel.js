@@ -1,18 +1,18 @@
-// Contest remove
+// Problem remove
 
 var swig    = require("swig");
 var session = require("../session");
-var contest = require("../contest");
+var problem = require("../problem");
 var util    = require("util");
 
-function handleContestdel(request, response, globals, contestId) {
+function handleProblemdel(request, response, globals, problemId) {
     var session_ = session.getSession(request, response);
 
-    contest.deleteContest(request, response, globals, contestId, function() {
-        response.writeHead(302, {
-            "Location": "/"
+    problem.deleteProblem(request, response, globals, problemId, function() {
+        response.writeHead(200, {
+            "Content-type": "text/html"
         });
-        response.end();
+        response.end('<script type="text/javascript">window.location.replace(document.referrer)</script>');
     }, function(err) {
         var templateOptions = {
             templates: {},
@@ -42,5 +42,5 @@ function handleContestdel(request, response, globals, contestId) {
 }
 
 exports.handlers = {
-    "/contestdel/": handleContestdel
+    "/problemdel/": handleProblemdel
 }

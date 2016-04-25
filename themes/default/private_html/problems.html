@@ -1,0 +1,53 @@
+{{ templates.page_header|safe }}
+<h1 class="center">Problems</h1>
+
+{% if problems.length == 0 %}
+<div class="center error">
+    No problems found.
+    {% if session.isAdmin %}
+    {% if showNewProblemButton %}
+    <a href="/problemctl">Create new</a>
+    {% endif %}
+    {% else %}
+    Check back soon!
+    {% endif %}
+</div>
+{% else %}
+<table class="generic-table" border="1">
+    <tr>
+        <th>Name</th>
+        <th>Action</th>
+    </tr>
+    {% if session.isAdmin %}
+    {% if showNewProblemButton %}
+    <tr>
+        <td class="center-text">
+            <b>New problem</b>
+        </td>
+        <td>
+            <a href="/problemctl">Create</a>
+        </td>
+    </tr>
+    {% endif %}
+    {% endif %}
+    {% for problem in problems %}
+    <tr>
+        <td>{{ problem.name }}</td>
+        <td>
+            {% if session.isAdmin %}
+            {% for button in extraButtons %}
+            <a href="{{ button.href_before }}{{ problem._id }}{{ button.href_after }}{% if ref %}&ref={{ ref }}{% endif %}"><b>{{ button.name }}</b></a>
+            {% endfor %}
+            {% endif %}
+            <a href="/problem/{{ problem._id }}">Read</a>
+            {% if session.isAdmin %}
+            <a href="/problemctl/{{ problem._id }}?ref={{ pathname }}">Edit</a>
+            <a href="/problemdel/{{ problem._id }}{% if ref %}?ref={{ ref }}{% endif %}">Delete</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{{ templates.page_footer|safe }}

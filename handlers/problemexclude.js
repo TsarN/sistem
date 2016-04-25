@@ -1,18 +1,27 @@
-// Contest remove
+// Problem exclude from contest
 
 var swig    = require("swig");
 var session = require("../session");
-var contest = require("../contest");
+var problem = require("../problem");
 var util    = require("util");
+var url     = require("url");
 
-function handleContestdel(request, response, globals, contestId) {
+function handleProblemexclude(request, response, globals, problemId) {
     var session_ = session.getSession(request, response);
+    var getArgs = url.parse(request.url, true).query || {};
 
-    contest.deleteContest(request, response, globals, contestId, function() {
-        response.writeHead(302, {
-            "Location": "/"
-        });
-        response.end();
+    problem.excludeProblem(request, response, globals, problemId, getArgs.contestId, function() {
+        if (!getArgs.ref) {
+            response.writeHead(200, {
+                "Content-type": "text/html"
+            });
+            response.end('<script type="text/javascript">window.location.replace(document.referrer)</script>');
+        } else {
+            response.writeHead(302, {
+                "Location": getArgs.ref
+            });
+            response.end();
+        }
     }, function(err) {
         var templateOptions = {
             templates: {},
@@ -42,5 +51,5 @@ function handleContestdel(request, response, globals, contestId) {
 }
 
 exports.handlers = {
-    "/contestdel/": handleContestdel
+    "/problemexclude/": handleProblemexclude
 }

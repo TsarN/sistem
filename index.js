@@ -41,7 +41,6 @@ var globals = {
 var databases = ['users', 'contests', 'problems', 'compilers'];
 
 for (i in databases) {
-    util.log("Loading database " + databases[i]);
     globals[databases[i]] = new Datastore({
         filename: __dirname + '/data/' + databases[i],
         autoload: true

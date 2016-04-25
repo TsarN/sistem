@@ -1,0 +1,10 @@
+{{ templates.page_header|safe }}
+{% if !err %}
+<h1 class="center">{{ problem.name }}</h1>
+<div class="statement">
+    {{ problem.statement|safe }}
+</div>
+{% else %}
+<div class="center error">{{ err }}</div>
+{% endif %}
+{{ templates.page_footer|safe }}
